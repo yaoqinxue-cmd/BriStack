@@ -5,7 +5,7 @@ import { CheckCircle } from "lucide-react";
 
 export default function EmbedPage({ params }: { params: Promise<{ key: string }> }) {
   const { key } = use(params);
-  const [creatorName, setCreatorName] = useState("Space");
+  const [displayName, setDisplayName] = useState("Space");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -14,7 +14,9 @@ export default function EmbedPage({ params }: { params: Promise<{ key: string }>
   useEffect(() => {
     fetch(`/api/embed/${key}`)
       .then(r => r.json())
-      .then(data => { if (data.creatorName) setCreatorName(data.creatorName); })
+      .then(data => {
+        setDisplayName(data.websiteName || data.displayName || "Space");
+      })
       .catch(() => {});
   }, [key]);
 
@@ -61,12 +63,12 @@ export default function EmbedPage({ params }: { params: Promise<{ key: string }>
           <div style={{ textAlign: "center", padding: "12px 0", color: "#16a34a" }}>
             <CheckCircle style={{ width: 28, height: 28, margin: "0 auto 8px", display: "block" }} />
             <p style={{ margin: 0, fontWeight: 600, fontSize: 15 }}>订阅成功！</p>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#6b7280" }}>感谢订阅 {creatorName}</p>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#6b7280" }}>感谢订阅 {displayName}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <p style={{ margin: "0 0 14px", fontSize: 15, fontWeight: 600, color: "#111827" }}>
-              订阅 {creatorName}
+              订阅 {displayName}
             </p>
             <input
               type="text"
