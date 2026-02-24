@@ -18,6 +18,7 @@ interface Issue {
   topics: string[];
   authorNote: string | null;
   humanWritten: boolean;
+  readingTimeMinutes: number | null;
   status: string;
   contentPenetrationScore: number | null;
   publishedAt: string | null;
