@@ -75,14 +75,14 @@ All from a single publish action.
 
 - **Three subscriber types**: Human (email) / Agent (API key) / MCP
 - **Source tracking** — know exactly which landing page or embed widget each subscriber came from
-- **Subscriber sequences** — welcome email + configurable delayed greeting email
+- **Subscriber sequences** — welcome email (customizable per source channel) + configurable delayed greeting email
 - **Level system** — automatic upgrade from Level 1 (subscribed) to Level 4 (core audience)
 
 ---
 
 - **三类订阅者**：人类（邮件）/ Agent（API Key）/ MCP
 - **来源追踪** — 精准知道每个订阅者来自哪个落地页或嵌入表单
-- **订阅序列** — 欢迎邮件 + 可配置延迟的问候邮件
+- **订阅序列** — 欢迎邮件（可按来源渠道分别定制）+ 可配置延迟的问候邮件
 - **等级系统** — 从 Level 1（已订阅）到 Level 4（核心圈子）自动升级
 
 ---
@@ -213,10 +213,11 @@ bristack/
 ├── app/
 │   ├── (auth)/login/            # Creator login
 │   ├── (dashboard)/dashboard/   # Creator dashboard
-│   │   ├── content/             # Issue list, editor, send
+│   │   │   ├── content/             # Issue list, editor, send
 │   │   ├── subscribers/         # Subscriber management
 │   │   ├── analytics/           # Dual-track analytics
-│   │   └── settings/            # SMTP, AI, websites, sequences
+│   │   ├── sequences/           # Email sequences (welcome + greeting, per-source)
+│   │   └── settings/            # SMTP, AI, websites, landing page
 │   ├── [slug]/                  # Public creator landing page
 │   ├── embed/[key]/             # Embeddable subscribe widget
 │   └── api/

@@ -9,10 +9,6 @@ interface SettingsData {
   emailProvider: "smtp" | "resend";
   smtpHost: string; smtpPort: number; smtpSecure: boolean; smtpUser: string; smtpPass: string;
   resendApiKey: string; anthropicApiKey: string;
-  welcomeEmailEnabled: boolean;
-  welcomeEmailSubject: string; welcomeEmailBody: string;
-  greetingEmailEnabled: boolean; greetingDelayDays: number;
-  greetingEmailSubject: string; greetingEmailBody: string;
 }
 
 interface WebsiteItem {
@@ -25,10 +21,6 @@ export default function SettingsPage() {
     fromName: "", fromEmail: "", emailProvider: "smtp",
     smtpHost: "", smtpPort: 587, smtpSecure: false, smtpUser: "", smtpPass: "",
     resendApiKey: "", anthropicApiKey: "",
-    welcomeEmailEnabled: true,
-    welcomeEmailSubject: "", welcomeEmailBody: "",
-    greetingEmailEnabled: false, greetingDelayDays: 3,
-    greetingEmailSubject: "", greetingEmailBody: "",
   });
   const [landingPageSubscriberCount, setLandingPageSubscriberCount] = useState(0);
   const [websites, setWebsites] = useState<WebsiteItem[]>([]);
@@ -217,93 +209,6 @@ export default function SettingsPage() {
           </button>
           {testStatus === "success" && <span className="text-sm text-green-600 flex items-center gap-1"><CheckCircle className="w-4 h-4" />连接成功</span>}
           {testStatus === "error" && <span className="text-sm text-red-500 flex items-center gap-1"><AlertCircle className="w-4 h-4" />{testError}</span>}
-        </div>
-      </Section>
-
-      {/* 订阅者触达序列 */}
-      <Section title="订阅者触达序列" hint="新订阅者加入后的自动化邮件链路">
-        {/* Timeline visual */}
-        <div className="flex items-start gap-3 text-xs text-gray-500 mb-2 px-1">
-          <div className="flex flex-col items-center">
-            <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs flex-shrink-0">1</div>
-            <div className="w-px flex-1 bg-gray-200 my-1 min-h-[24px]" />
-          </div>
-          <div className="flex-1 pb-4">
-            <div className="flex items-center justify-between mb-2">
-              <p className="font-medium text-gray-700 text-sm">订阅即时 · 欢迎邮件</p>
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="welcomeEmail" checked={settings.welcomeEmailEnabled}
-                  onChange={e => setSettings({ ...settings, welcomeEmailEnabled: e.target.checked })}
-                  className="w-3.5 h-3.5 text-indigo-600 rounded border-gray-300" />
-                <label htmlFor="welcomeEmail" className="text-xs text-gray-600">启用</label>
-              </div>
-            </div>
-            {settings.welcomeEmailEnabled && (
-              <div className="space-y-3 border-l-2 border-indigo-100 pl-3">
-                <Field label="邮件主题" hint="留空则使用默认，支持 {name} {creatorName}">
-                  <input type="text" value={settings.welcomeEmailSubject}
-                    onChange={e => setSettings({ ...settings, welcomeEmailSubject: e.target.value })}
-                    className="input" placeholder={`欢迎订阅 ${settings.name || "我的 Space"}（默认）`} />
-                </Field>
-                <Field label="邮件正文" hint="留空则使用默认模板，支持 {name} {creatorName} 变量，每行为一段">
-                  <textarea value={settings.welcomeEmailBody}
-                    onChange={e => setSettings({ ...settings, welcomeEmailBody: e.target.value })}
-                    className="input resize-none" rows={4}
-                    placeholder={`嗨 {name}，\n\n感谢你订阅 {creatorName}！\n\n接下来我会定期给你发送深度内容，期待与你在文字中相遇。`} />
-                </Field>
-                <p className="text-xs text-gray-400">留空则发送默认欢迎邮件（含 MCP 安装说明）</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex items-start gap-3 text-xs text-gray-500">
-          <div className="flex flex-col items-center">
-            <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs flex-shrink-0">2</div>
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-2">
-              <p className="font-medium text-gray-700 text-sm">
-                订阅后 {settings.greetingDelayDays} 天 · 问候邮件
-              </p>
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="greetingEnabled" checked={settings.greetingEmailEnabled}
-                  onChange={e => setSettings({ ...settings, greetingEmailEnabled: e.target.checked })}
-                  className="w-3.5 h-3.5 text-indigo-600 rounded border-gray-300" />
-                <label htmlFor="greetingEnabled" className="text-xs text-gray-600">启用</label>
-              </div>
-            </div>
-            {settings.greetingEmailEnabled && (
-              <div className="space-y-3 border-l-2 border-purple-100 pl-3">
-                <Field label="发送时机">
-                  <div className="flex items-center gap-2">
-                    <input type="number" min={1} max={30} value={settings.greetingDelayDays}
-                      onChange={e => setSettings({ ...settings, greetingDelayDays: parseInt(e.target.value) || 3 })}
-                      className="input w-20" />
-                    <span className="text-sm text-gray-500">天后（订阅日期起算）</span>
-                  </div>
-                </Field>
-                <Field label="邮件主题" hint="{name} {creatorName} 为变量">
-                  <input type="text" value={settings.greetingEmailSubject}
-                    onChange={e => setSettings({ ...settings, greetingEmailSubject: e.target.value })}
-                    className="input" placeholder="嗨 {name}，订阅几天了，感觉怎么样？" />
-                </Field>
-                <Field label="邮件正文" hint="每行一段，{name} {creatorName} 为变量">
-                  <textarea value={settings.greetingEmailBody}
-                    onChange={e => setSettings({ ...settings, greetingEmailBody: e.target.value })}
-                    className="input resize-none" rows={4}
-                    placeholder={`嗨 {name}，\n\n你已经订阅 {creatorName} 几天了，希望你读到了一些有价值的内容。\n\n有任何想法，直接回复这封邮件就好。`} />
-                </Field>
-                <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 text-xs text-amber-700 space-y-1">
-                  <p className="font-medium">需配置每日 Cron 触发：</p>
-                  <code className="block bg-white rounded border border-amber-200 px-2 py-1 break-all">
-                    GET {appUrl}/api/cron/greetings?secret=YOUR_CRON_SECRET
-                  </code>
-                  <p>环境变量设置 <code>CRON_SECRET=YOUR_CRON_SECRET</code></p>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </Section>
 

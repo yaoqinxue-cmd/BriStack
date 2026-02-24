@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
 
   // Send welcome email (async, don't block response)
   if (!isBot) {
-    sendWelcomeEmail(creator, newSubscriber, email).catch(console.error);
+    sendWelcomeEmail(creator, newSubscriber, email, sourceWebsiteId).catch(console.error);
   }
 
   return NextResponse.json({ ok: true, subscriberId: newSubscriber.id });
@@ -100,12 +100,17 @@ export async function POST(req: NextRequest) {
 async function sendWelcomeEmail(
   creator: { id: number; name: string; slug: string; fromEmail: string | null },
   subscriber: { id: string; name: string | null },
-  email: string
+  email: string,
+  sourceWebsiteId: string | null = null
 ) {
-  const creatorSettings = await db.query.settings.findFirst({
-    where: eq(settings.creatorId, creator.id),
-  });
+  const [creatorSettings, sourceWebsite] = await Promise.all([
+    db.query.settings.findFirst({ where: eq(settings.creatorId, creator.id) }),
+    sourceWebsiteId
+      ? db.query.websites.findFirst({ where: eq(websites.id, sourceWebsiteId) })
+      : Promise.resolve(null),
+  ]);
 
+  // Global welcome email must be enabled
   const welcomeEnabled = creatorSettings?.welcomeEmailEnabled !== false;
   if (!welcomeEnabled) return;
 
@@ -124,9 +129,15 @@ async function sendWelcomeEmail(
   }
 }`;
 
-  // Use custom subject/body if configured
-  const customSubject = creatorSettings?.welcomeEmailSubject;
-  const customBody = creatorSettings?.welcomeEmailBody;
+  // Per-website override takes priority if enabled
+  const useWebsiteOverride = sourceWebsite?.welcomeEmailEnabled === true;
+  const customSubject = useWebsiteOverride
+    ? (sourceWebsite?.welcomeEmailSubject || creatorSettings?.welcomeEmailSubject)
+    : creatorSettings?.welcomeEmailSubject;
+  const customBody = useWebsiteOverride
+    ? (sourceWebsite?.welcomeEmailBody || creatorSettings?.welcomeEmailBody)
+    : creatorSettings?.welcomeEmailBody;
+
   const resolvedSubject = customSubject
     ? customSubject
         .replace(/\{name\}/g, subscriber.name || email)

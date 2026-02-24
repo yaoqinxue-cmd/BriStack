@@ -10,6 +10,7 @@ import {
   Settings,
   LogOut,
   Zap,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +19,7 @@ const navItems = [
   { href: "/dashboard/content", label: "内容管理", icon: FileText },
   { href: "/dashboard/subscribers", label: "订阅者", icon: Users },
   { href: "/dashboard/analytics", label: "分析", icon: BarChart2 },
+  { href: "/dashboard/sequences", label: "触达邮件", icon: Mail },
   { href: "/dashboard/settings", label: "设置", icon: Settings },
 ];
 

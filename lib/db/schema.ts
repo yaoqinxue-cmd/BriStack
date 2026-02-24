@@ -253,6 +253,9 @@ export const websites = pgTable("websites", {
   name: text("name").notNull(),        // "我的博客"
   url: text("url").notNull(),           // "https://myblog.com"
   embedKey: text("embed_key").notNull().unique(), // unique token for widget auth
+  welcomeEmailEnabled: boolean("welcome_email_enabled").default(false),
+  welcomeEmailSubject: text("welcome_email_subject"),
+  welcomeEmailBody: text("welcome_email_body"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("websites_creator_id_idx").on(table.creatorId),

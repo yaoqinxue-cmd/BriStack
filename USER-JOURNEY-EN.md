@@ -145,16 +145,27 @@ Email content automatically includes:
 - Unsubscribe link (compliance)
 - Tracking pixel (for real open tracking)
 
-### 6. Subscriber Sequences
+### 6. Email Sequences
 
-**Welcome email** (sent immediately on subscription):
-- Subject and body customizable in settings
+Email sequences are a dedicated sidebar section (`/dashboard/sequences`), split into **Default Sequence** and **Per-Website Customization**.
+
+**Default Sequence (applies to landing page subscribers)**
+
+Welcome email (sent immediately on subscription):
+- Subject and body fully customizable
 - Supports variables: `{name}` (subscriber name), `{creatorName}` (creator name)
 - Includes an MCP integration config example
 
-**Greeting email** (configurable delay, default 3 days after subscription):
+Greeting email (configurable delay, default 3 days after subscription):
 - Can be enabled or disabled
 - Fully customizable content
+
+**Per-Website Custom Welcome Emails**
+
+Each external website can have its own welcome email that overrides the default:
+- Send a tailored welcome message to subscribers from "Blog A", with a site-specific discount code
+- Send different content to subscribers arriving from the "Official Site"
+- Sites without custom config automatically fall back to the default sequence
 
 ### 7. Analytics & Insights
 
@@ -370,7 +381,8 @@ MCP Subscriber
 | `/dashboard/content/{id}` | Edit content (with channel selector) | Login required |
 | `/dashboard/subscribers` | Subscriber management | Login required |
 | `/dashboard/analytics` | Analytics dashboard | Login required |
-| `/dashboard/settings` | Settings (with per-channel subscriber counts) | Login required |
+| `/dashboard/sequences` | Email sequences (welcome + greeting, per-source customization) | Login required |
+| `/dashboard/settings` | Settings (landing page, external sites, email service, AI config) | Login required |
 | `/embed/{key}` | External site subscribe form (iframe embed) | Public |
 | `/api/v1/feed` | JSON Feed (landing page channel content) | Public |
 | `/api/v1/issues/{id}` | Single article API | Public |
