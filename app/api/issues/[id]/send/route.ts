@@ -43,6 +43,12 @@ export async function POST(
     return NextResponse.json({ error: "内容不存在或未发布" }, { status: 404 });
   }
 
+  // Check if email channel is enabled for this issue
+  const tc = issue.targetChannels || [];
+  if (tc.length > 0 && !tc.includes("email")) {
+    return NextResponse.json({ error: "此内容未开放邮件渠道，无法发送邮件" }, { status: 400 });
+  }
+
   const creator = await db.query.creators.findFirst({
     where: eq(creators.id, session.creatorId!),
     columns: { name: true, fromEmail: true },

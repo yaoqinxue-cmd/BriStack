@@ -36,7 +36,7 @@ export async function POST(
   if (!issue) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   // Update content before publishing
-  const { title, subtitle, coverImage, content, summary, keyPoints, topics, authorNote, humanWritten } = body;
+  const { title, subtitle, coverImage, content, summary, keyPoints, topics, authorNote, humanWritten, targetChannels } = body;
   const fullMarkdown = content ? markdownFromHtml(content) : issue.fullMarkdown;
   const readingTime = fullMarkdown ? estimateReadingTime(fullMarkdown) : issue.readingTimeMinutes;
 
@@ -70,6 +70,7 @@ export async function POST(
       topics: topics ?? issue.topics,
       authorNote: authorNote ?? issue.authorNote,
       humanWritten: humanWritten ?? issue.humanWritten,
+      ...(targetChannels !== undefined && { targetChannels }),
       readingTimeMinutes: readingTime,
       status: "published",
       publishedAt: new Date(),
